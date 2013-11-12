@@ -1,0 +1,37 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="openair-integration-plugin"/>
+    
+    <!-- add our web resources -->
+    <web-resource key="openair-integration-plugin-resources" name="openair-integration-plugin Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        
+        <resource type="download" name="openair-integration-plugin.css" location="/css/openair-integration-plugin.css"/>
+        <resource type="download" name="openair-integration-plugin.js" location="/js/openair-integration-plugin.js"/>
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>openair-integration-plugin</context>
+    </web-resource>
+    
+    <!-- publish our component -->
+    <component key="myPluginComponent" class="se.valtech.jira.plugins.MyPluginComponentImpl" public="true">
+        <interface>se.valtech.jira.plugins.MyPluginComponent</interface>
+    </component>
+    
+    <!-- import from the product container -->
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
+
+    <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher"/>
+    <component key="eventListener" class="se.valtech.jira.plugins.IssueEventListener">
+        <description>Class that processes the incoming JIRA issue events.</description>
+    </component>
+    
+</atlassian-plugin>
