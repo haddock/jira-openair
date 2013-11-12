@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import se.valtech.jira.openair.Task;
+
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.jira.event.issue.IssueEvent;
@@ -15,7 +17,6 @@ public class IssueEventListener implements InitializingBean, DisposableBean{
 
 	private static final Logger log = LoggerFactory.getLogger(IssueEventListener.class);
 	private final EventPublisher eventPublisher;
-	
 	
 	public IssueEventListener(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
@@ -36,15 +37,15 @@ public class IssueEventListener implements InitializingBean, DisposableBean{
 		Long eventTypeId = issueEvent.getEventTypeId();
 		Issue issue = issueEvent.getIssue();
 		
+		log.info(new Task(issue).asXML());
+		
+		log.info("Issue event ID: {} project: {}", issueEvent.getEventTypeId(), issue.getProjectObject().getDescription());
 		if (eventTypeId.equals(EventType.ISSUE_CREATED_ID)) {
-			log.info("Issue {} has been created at {}.", issue.getKey(), issue.getCreated());
-		} else if (eventTypeId.equals(EventType.ISSUE_RESOLVED_ID)) {
-			log.info("Issue {} has been resolved at {}.", issue.getKey(), issue.getResolutionDate());
-		} else if (eventTypeId.equals(EventType.ISSUE_CLOSED_ID)) {
-			log.info("Issue {} has been closed at {}.", issue.getKey(), issue.getUpdated());
-		} else if (eventTypeId.equals(EventType.ISSUE_REOPENED_ID)) {
-			log.info("Issue {} has been reopened at {}.", issue.getKey(), issue.getUpdated());
+			log.info("Issue {} has been created by {}.", issue.getKey(), issue.getReporter().getDisplayName());
+		} else if (eventTypeId.equals(EventType.ISSUE_ASSIGNED_ID)) {
+			log.info("Issue {} has been assigned to {}.", issue.getKey(), issue.getAssignee().getDisplayName());
+		} else if (eventTypeId.equals(EventType.ISSUE_DELETED_ID)) {
+			log.info("Issue {} has been deleted.", issue.getKey());
 		}
 	}
-
 }
