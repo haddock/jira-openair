@@ -1,8 +1,6 @@
 package se.valtech.jira.openair;
 
 import com.atlassian.jira.issue.Issue;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 public class Task {
 	String id;
@@ -44,12 +42,6 @@ public class Task {
 		this.userid = issue.getAssigneeId();
 		this.created = issue.getCreated().toString();
 		this.updated = issue.getUpdated().toString();
-	}
-	
-	public String asXML () {
-		XStream xstream = new XStream(new StaxDriver());
-		xstream.aliasPackage("", "se.valtech.jira.openair");
-		return xstream.toXML(this);
 	}
 }
 
