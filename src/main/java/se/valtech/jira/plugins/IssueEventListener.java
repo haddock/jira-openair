@@ -1,5 +1,7 @@
 package se.valtech.jira.plugins;
 
+import java.io.IOException;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -22,6 +24,7 @@ import com.atlassian.jira.issue.Issue;
 
 public class IssueEventListener implements InitializingBean, DisposableBean{
 
+	private static final String OPEN_AIR_URL = "http://httpbin.org/post";
 	private static final Logger log = LoggerFactory.getLogger(IssueEventListener.class);
 	private final EventPublisher eventPublisher;
 	
@@ -52,18 +55,19 @@ public class IssueEventListener implements InitializingBean, DisposableBean{
 	}
 
 	private void sendToOpenAir(Action action) throws OpenAirCommunicationException {
-		HttpClient client = new HttpClient();
-		HttpClientParams params = new HttpClientParams();
-		params.setConnectionManagerTimeout(1000);
-		params.setSoTimeout(1000);
-		client.setParams(params);
-		PostMethod post = new PostMethod("http://httpbin.org/post");
-		post.setRequestHeader("Content-Language", "en-US");
-		log.info(action.asXML());
 		try {
+			HttpClient client = new HttpClient();
+			HttpClientParams params = new HttpClientParams();
+			params.setConnectionManagerTimeout(1000);
+			params.setSoTimeout(1000);
+			client.setParams(params);
+			PostMethod post = new PostMethod(OPEN_AIR_URL);
+			post.setRequestHeader("Content-Language", "en-US");
 			post.setRequestEntity(new StringRequestEntity(action.asXML(), "text/xml", "UTF-8"));
+			log.info(post.getRequestEntity().toString());
 			int responseCode = client.executeMethod(post);
 			if (responseCode >= 300) {
+				throw new OpenAirCommunicationException(new IOException("Error while sending " + post.getRequestEntity() + " to OpenAir at " + OPEN_AIR_URL + ". Got response code: " + responseCode));
 			}
 		} catch (Exception e) {
 			throw new OpenAirCommunicationException(e);
