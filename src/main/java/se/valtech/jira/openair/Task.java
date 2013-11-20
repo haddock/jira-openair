@@ -38,6 +38,7 @@ public class Task {
 	
 	public Task(Issue issue) {
 		this.projectid = issue.getProjectObject().getDescription();
+		this.projecttask_typeid = "1";
 		this.description = issue.getKey();
 		this.userid = issue.getAssigneeId();
 		this.created = issue.getCreated().toString();
