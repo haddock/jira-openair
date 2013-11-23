@@ -5,6 +5,7 @@
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
+        <param name="configure.url">/plugins/servlet/openair/admin</param>
     </plugin-info>
 
     <!-- add our i18n resource -->
@@ -22,8 +23,8 @@
     </web-resource>
     
     <!-- publish our component -->
-    <component key="myPluginComponent" class="se.valtech.jira.plugins.MyPluginComponentImpl" public="true">
-        <interface>se.valtech.jira.plugins.MyPluginComponent</interface>
+    <component key="OpenAirIntegrationPluginComponent" class="se.valtech.jira.plugins.OpenAirIntegrationPluginComponentImpl" public="true">
+        <interface>se.valtech.jira.plugins.OpenAirIntegrationPluginComponent</interface>
     </component>
     
     <!-- import from the product container -->
@@ -34,4 +35,25 @@
         <description>Class that processes the incoming JIRA issue events.</description>
     </component>
     
+    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" />
+	<component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider" />
+	<component-import key="renderer" interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
+
+	<template-context-item key="applicationPropertiesContextItem" component-ref="applicationProperties" context-key="applicationProperties" name="Application Properties Context Item"/>
+  	
+  	<web-resource name="Admin Web Resources" key="resources"> 
+	  <dependency>com.atlassian.auiplugin:ajs</dependency> 
+	  <resource type="download" name="admin.js" location="admin.js"/> 
+	  <context>openair-integration-plugin</context>
+	</web-resource>
+	
+	<servlet key="admin-servlet" class="se.valtech.jira.plugins.AdminServlet">
+  	  <url-pattern>/openair/admin</url-pattern>
+	</servlet>
+	
+	<component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
+	<component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
+	<rest key="rest" path="/openairintegrationplugin-admin" version="1.0">
+	  <description>Provides REST resources for the admin UI.</description>
+	</rest>
 </atlassian-plugin>

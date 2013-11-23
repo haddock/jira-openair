@@ -5,12 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import se.valtech.jira.openair.OpenAirCommunicationException;
+import se.valtech.jira.openair.OpenAirManager;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
-import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.event.issue.IssueEvent;
 import com.atlassian.jira.event.type.EventType;
 import com.atlassian.jira.issue.Issue;
@@ -19,9 +17,11 @@ public class IssueEventListener implements InitializingBean, DisposableBean{
 
 	private static final Logger log = LoggerFactory.getLogger(IssueEventListener.class);
 	private final EventPublisher eventPublisher;
+	private final OpenAirManager openAirManager;
 	
 	public IssueEventListener(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
+		openAirManager = new OpenAirManager();
 	}
 	
 	@Override
@@ -35,19 +35,17 @@ public class IssueEventListener implements InitializingBean, DisposableBean{
 	}
 
 	@EventListener
-	public void onIssueEvent(IssueEvent issueEvent) throws OpenAirCommunicationException {
-		Long eventTypeId = issueEvent.getEventTypeId();
-		Issue issue = issueEvent.getIssue();
-		
+	public void onIssueEvent(IssueEvent issueEvent) {
+		Long eventTypeId = issueEvent.getEventTypeId();		
 		if (eventTypeId.equals(EventType.ISSUE_CREATED_ID) || eventTypeId.equals(EventType.ISSUE_ASSIGNED_ID)) {
-			String description = issue.getProjectObject().getDescription();
-			int offset = description.indexOf("|openairid:") + "|openairid:".length();
-			int stop = description.indexOf("|", offset);
-			String openairprojectid = description.substring(offset, stop);
-			log.info("project id: " + openairprojectid);
-			User user = issue.getAssignee();
-			String openairuserid = ComponentAccessor.getUserPropertyManager().getPropertySet(user).getString("jira.meta.openairid");
-			log.info("user id: " + openairuserid);
+			Issue issue = issueEvent.getIssue();
+			try {
+				String projectId = openAirManager.getOpenAirProjectId(issue.getProjectObject());
+				String userId = openAirManager.getOpenAirUserId(issue.getAssignee());
+				openAirManager.enableTimeReportForIssue(projectId, userId, issue.getKey());
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
 		} 
 	}
 }

@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>OpenAirIntegration Admin</title>
+    <meta name="decorator" content="atl.admin">
+    $webResourceManager.requireResource("se.valtech.jira.plugins.openair-integration-plugin:resources")
+    <meta name="application-base-url" content="$applicationProperties.getBaseUrl()">
+  </head>
+  <body>
+    <form id="admin" class="aui">
+	  <div class="field-group">
+	    <label for="companyId">Company ID:</label>
+	    <input type="text" id="companyId" name="companyId" class="text">
+	   </div>
+	   <div class="field-group">
+	     <label for="userId">User ID:</label>
+	     <input type="text" id="userId" name="userId" class="text">
+	   </div>
+	   <div class="field-group">
+	     <label for="password">Password:</label>
+	     <input type="text" id="password" name="password" class="text">
+	   </div>
+	   <div class="field-group">
+	     <input type="submit" value="Save" class="button">
+	   </div>
+	</form>
+  </body>
+</html>
