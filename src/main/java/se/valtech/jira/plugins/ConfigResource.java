@@ -14,7 +14,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
- 
+
+import org.jfree.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
@@ -23,6 +27,7 @@ import com.atlassian.sal.api.user.UserManager;
 
 @Path("/")
 public class ConfigResource {
+	private static final Logger log = LoggerFactory.getLogger(ConfigResource.class);
 	private final UserManager userManager;
 	private final PluginSettingsFactory pluginSettingsFactory;
 	private final TransactionTemplate transactionTemplate;
