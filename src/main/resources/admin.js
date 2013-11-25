@@ -6,6 +6,7 @@ AJS.toInit(function() {
       url: baseUrl + "/rest/openairintegrationplugin-admin/1.0/",
       dataType: "json",
       success: function(config) {
+        AJS.$("#url").attr("value", config.url);
         AJS.$("#companyId").attr("value", config.companyId);
         AJS.$("#userId").attr("value", config.userId);
         AJS.$("#password").attr("value", config.password);
@@ -19,7 +20,7 @@ AJS.toInit(function() {
 	    type: "PUT",
 	    contentType: "application/json",
 	   
-	    data: '{ "companyId": "' + AJS.$("#companyId").attr("value") + '", "userId": "' +  AJS.$("#userId").attr("value") + '", "password": "' + AJS.$("#password").attr("value") + '" }',
+	    data: '{  "url": "' + AJS.$("#url").attr("value") + '", "companyId": "' + AJS.$("#companyId").attr("value") + '", "userId": "' +  AJS.$("#userId").attr("value") + '", "password": "' + AJS.$("#password").attr("value") + '" }',
 	    processData: false
 	  });
 	}

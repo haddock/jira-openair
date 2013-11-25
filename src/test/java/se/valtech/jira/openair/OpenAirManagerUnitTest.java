@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.atlassian.jira.project.Project;
+import com.atlassian.sal.api.pluginsettings.PluginSettings;
 
 public class OpenAirManagerUnitTest {
 	
@@ -20,18 +21,15 @@ public class OpenAirManagerUnitTest {
 	
 	@Before
 	public void initialize() {
-		openAirManager = new OpenAirManager();
+		openAirManager = new OpenAirManager(mock(PluginSettings.class));
 		project = mock(Project.class);
 	}
 	
 	@Test
 	public void testGetOpenAirIdFromJiraProject() throws OpenAirCommunicationException {
 		when(project.getDescription()).thenReturn("Dummy description <!-- |openairid:520| -->");
-		
 		String expectedId = "520";
 		String actualId = openAirManager.getOpenAirProjectId(project);
-		
-		
 		assertEquals(expectedId, actualId);
 	}
 	

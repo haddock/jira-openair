@@ -56,6 +56,7 @@ public class ConfigResource {
 	    {
 	      PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
 	      Config config = new Config();
+	      config.setUrl((String) settings.get(Config.class.getName() + ".url"));
 	      config.setCompanyId((String) settings.get(Config.class.getName() + ".companyId"));
 	      config.setUserId((String) settings.get(Config.class.getName() + ".userId"));
 	      config.setPassword((String) settings.get(Config.class.getName() + ".password"));
@@ -79,6 +80,7 @@ public class ConfigResource {
 	    public Object doInTransaction()
 	    {
 	      PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
+	      pluginSettings.put(Config.class.getName() + ".url", config.getUrl());
 	      pluginSettings.put(Config.class.getName() + ".companyId", config.getCompanyId());
 	      pluginSettings.put(Config.class.getName()  +".userId", config.getUserId());
 	      pluginSettings.put(Config.class.getName()  +".password", config.getPassword());
@@ -92,9 +94,18 @@ public class ConfigResource {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static final class Config
 	{
+		@XmlElement private String url;
 		@XmlElement private String companyId;
 		@XmlElement private String userId;
 		@XmlElement private String password;
+		
+		public String getUrl() {
+			return url;
+		}
+		
+		public void setUrl(String url) {
+			this.url = url;
+		}
 		
 		public String getCompanyId() {
 			return companyId;

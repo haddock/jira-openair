@@ -13,14 +13,17 @@ import com.opensymphony.module.propertyset.PropertySet;
 public class OpenAirManager {
 	private static final Logger log = LoggerFactory.getLogger(OpenAirManager.class);
 	private final String jiraPropertyKey = "openairid";
+	private String url = "";
 	private String companyId = "";
 	private String userId = "";
 	private String password = "";
+	private static final String PLUGIN_SETTING_OPENAIR_API_URL = "se.valtech.jira.plugins.ConfigResource$Config.url";
 	private static final String PLUGIN_SETTING_OPENAIR_COMPANY_ID = "se.valtech.jira.plugins.ConfigResource$Config.companyId";
 	private static final String PLUGIN_SETTING_OPENAIR_USER_ID = "se.valtech.jira.plugins.ConfigResource$Config.userId";
 	private static final String PLUGIN_SETTING_OPENAIR_PASSWORD = "se.valtech.jira.plugins.ConfigResource$Config.password";
 
 	public OpenAirManager(PluginSettings pluginSettings) {
+		setUrl((String)pluginSettings.get(PLUGIN_SETTING_OPENAIR_API_URL));
 		setCompanyId((String)pluginSettings.get(PLUGIN_SETTING_OPENAIR_COMPANY_ID));
 		setUserId((String)pluginSettings.get(PLUGIN_SETTING_OPENAIR_USER_ID));
 		setPassword((String)pluginSettings.get(PLUGIN_SETTING_OPENAIR_PASSWORD));
@@ -52,6 +55,14 @@ public class OpenAirManager {
 	
 	public void enableTimeReportForIssue(String projectId, String assigneeUserId, String issueLabel) {
 		log.info("---- project:" + projectId + " userid:" + assigneeUserId + " projecttask:" + issueLabel);
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public String getCompanyId() {
